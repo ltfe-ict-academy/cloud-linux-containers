@@ -1,7 +1,7 @@
 # Cloud Specialization: Linux Containers
 
 <p align="center">
-  <a href="https://fastapi.tiangolo.com"><img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI"></a>
+  <a href="./resources/LinuxContainers.png"><img src="./resources/LinuxContainers.png" alt="Linux Containers"></a>
 </p>
 <p align="center">
     <em>Learn Linux Containers (LXC/LXD), the classic entry-level course for our Cloud Specialization series.</em>
