@@ -325,4 +325,6 @@ systemd-run --user --scope -p "Delegate=yes" -- lxc-stop -n my-first-ubuntu
 systemd-run --user --scope -p "Delegate=yes" -- lxc-destroy -n my-first-ubuntu
 ```
 
-With cgroup v2, you must run LXC commands under a delegated user scope, or the container won't get its own writable cgroup. On cgroup v2, unprivileged users must be explicitly delegated a cgroup. Best day-to-day setup on modern Ubuntu. Keeps the LXC monitor and cgroup/network mgmt owned by your user, not root. This is the strongest isolation you’ll get with LXC: container root is mapped to an unprivileged host ID range (user namespaces), and the host’s root isn’t in the loop for the runtime control path.
+To run unprivileged containers as an unprivileged user, the **user must be allocated an empty delegated cgroup** (this is required because of the leaf-node and delegation model of cgroup2, not because of liblxc).
+
+It is not possible to simply start a container from a shell as a user and automatically delegate a cgroup. Therefore, you need to wrap each call to any of the lxc-* commands in a systemd-run command.
