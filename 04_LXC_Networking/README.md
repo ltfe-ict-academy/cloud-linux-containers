@@ -19,9 +19,7 @@ The host OS, requires the ability to bridge traffic between the containers/VMs a
 To verify that bridging is enabled, run the following command: `lsmod | grep bridge`
 
 <!-- TODO: collision domains? -->
-The built-in Linux bridge is a software layer 2 device. OSI layer 2 devices provide a way of
-connecting multiple Ethernet segments together and forward traffic based on MAC
-addresses, effectively creating separate broadcast domains.
+The built-in Linux bridge is a software layer 2 device. OSI layer 2 devices provide a way of connecting multiple Ethernet segments together and forward traffic based on MAC addresses, effectively creating separate broadcast domains.
 
 Let's take a look at the default lxc-net file: `cat /etc/default/lxc-net`
 
