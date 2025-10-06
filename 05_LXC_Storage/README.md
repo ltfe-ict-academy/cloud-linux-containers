@@ -62,11 +62,16 @@ Specify the name of the container on the original host we want to back up, and a
 - `sudo lxc-stop -n mount_container`
 - `sudo lxc-ls -f`
 - `sudo lxc-copy --name mount_container --newname mount_container_backup`
+- `sudo lxc-ls -f`
 - `sudo ls /var/lib/lxc`
 
 Creating a full copy will update the configuration file of the new container with the newly specified name and location of the rootfs:
 - `sudo cat /var/lib/lxc/mount_container_backup/config`
 
+We can run and stop the new container as usual:
+- `sudo lxc-start -n mount_container_backup`
+- `sudo lxc-ls -f`
+- `sudo lxc-stop -n mount_container_backup`
 
 ## Snapshots
 To more easily support the use of snapshot clones for iterative container development, LXC supports snapshots. When working on a container C1, before making a potentially dangerous or hard-to-revert change, you can create a snapshot.
@@ -122,6 +127,7 @@ sudo lxc-destroy -n mount_container
 sudo lxc-destroy -n mount_container_no_nginx
 sudo lxc-destroy -n mount_container_backup
 sudo lxc-ls -f
+rm snap-comment
 ```
 
 ## Passing devices to a running container
@@ -134,11 +140,11 @@ But for one-off things, there’s also a very convenient tool called `lxc-device
 
 The same tool also allows moving network devices from the host to within the container.
 
-
+<!-- 
 ## Using the LVM backing store
 
 ## Using the Btrfs backing store
 
 ## Using the ZFS backing store
 
-## Ephemeral Containers
+## Ephemeral Containers -->
