@@ -73,14 +73,14 @@ Container technology has existed for a long time in different forms, but it has 
 Linux containers, also known as LXC, was the first implementation of system containers that was entirely based on mainline Linux features. This means that you could take a completely clean upstream kernel, or the kernel as distributed by any Linux distribution, and use that to create containers on Linux. LXC itself is a low-level tool that can create both system containers and application containers.
 - LXC containers are often considered as something in the middle between a chroot and a full-fledged virtual machine.
 - The goal of LXC is to create an environment as close as possible to a standard Linux installation but without the need for a separate kernel.
-- LXC containers are essentially a copy of an operating system running on the same kernel as its host, so in this case, you don’t virtualise anything, and there are no overhead processes.
+- LXC containers are essentially a copy of an operating system running on the same kernel as its host, so in this case, you don't virtualise anything, and there are no overhead processes.
 
 **[linuxcontainers.org](https://linuxcontainers.org/) is the umbrella project** behind Incus, LXC, LXCFS, Distrobuilder and more.
 
 The goal is to offer a **distro and vendor neutral environment** for the development of Linux container technologies. The focus is providing containers and virtual machines that run full Linux systems. While VMs supply a complete environment, system containers offer an environment as close as possible to the one you'd get from a VM, but without the overhead that comes with running a separate kernel and simulating all the hardware.
 
 **When should you use Linux containers?**
-- Anytime when you’re running Linux on Linux, you should be considering using containers instead of virtual machines.
+- Anytime when you're running Linux on Linux, you should be considering using containers instead of virtual machines.
 - For almost any use case, you could run the exact same workload in a system container and not get any of the overhead that you usually get when using virtual machines.
 - The only exception would be if you needed a specific version of the kernel different from the kernel of the host, for a specific feature of that virtual machine.
 - System containers are much easier to manage than virtual machines.
@@ -107,20 +107,20 @@ LXD:
 - ✅ [LXC vs Docker: Why Docker is Better in 2023](https://www.upguard.com/blog/docker-vs-lxc)
 - ✅ [LXC vs Docker: Which Container Platform Is Right for You?](https://earthly.dev/blog/lxc-vs-docker/)
 
-> Up to version 0.8, Docker was essentially based on LXC.
+> Docker originally used LXC as its default execution environment and switched at v0.9 (March 2014) to its own libcontainer (now OCI/runc-based).
 
 - **Host-Machine Utilization**:
-    - Docker: utilizes application-level virtualization
-    - LXC: provides a lightweight OS-level virtualization, making LXC more efficient in resource utilization
+    - **Docker** typically runs single-process application containers with layered images and copy-on-write filesystems, which can be extremely space/time efficient for app deployments.
+    - **LXC** runs system containers (full init, multiple services), which can be heavier per container but better when you need a whole distro-like environment.
 - **Simplicity**:
-    - Docker shines in simplicity and flexibility in design and usage. Its user-friendly interface and irregular approach through Dockerfiles make it easy for developers to create and manage containers.
+    - Docker shines in simplicity and flexibility in design and usage. Its user-friendly interface and irregular approach through Dockerfiles make it easy for developers to create and manage containers. Docker is simpler and more feature-rich for dev/CI/CD.
     - LXC is a low-level tool that requires expertise in Linux administration and containerization. It is not as user-friendly as Docker.
 - **Tooling**:
     - Docker offers a rich set of commands and tools for managing containers, making it highly versatile for various use cases.
     - LXC, while functional, may need more of the user-friendly tooling.
 - **Use Cases**:
     - Docker Use Cases: Microservices Architecture, Continuous Integration and Continuous Deployment (CI/CD), DevOps Environments
-    - LXC Use Cases: Heavy Resource Utilization Applications, Virtual Desktop Infrastructure (VDI),  System-Level Testing
+    - LXC Use Cases: Running a full Linux userspace with systemd, legacy apps, or doing system-level testing where you need near-VM isolation without a hypervisor.
 
 
 ## Features to Enable Containers
