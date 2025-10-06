@@ -27,3 +27,4 @@ for container in lxc.list_containers(as_object=True):
 
     print("Done updating container %s" % container.name)
     print("-------------------------------------")
+

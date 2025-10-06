@@ -2,10 +2,10 @@ import sys
 
 import lxc
 
-conainer_name = input("Enter the name of the container to run the function on: ")
+container_name = input("Enter the name of the container to run the function on: ")
 
 
-c = lxc.Container(conainer_name)
+c = lxc.Container(container_name)
 if not c.running:
     c.start()
 

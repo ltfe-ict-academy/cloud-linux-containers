@@ -34,8 +34,11 @@ def create_container(
 
     if c.running:
         print("Container is started and running successfully.")
+    else:
+        print("Container is not running", file=sys.stderr)
 
 
 if __name__ == "__main__":
     container_name = input("Enter the container name: ")
     create_container(container_name)
+

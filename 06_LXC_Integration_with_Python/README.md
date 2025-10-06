@@ -17,27 +17,22 @@ The python bindings are typically very close to the C API except for the part wh
 - Update and upgrade the system: `sudo apt update && sudo apt upgrade -y`
 - Install the LXC development libraries on Ubuntu with the following command: `sudo apt install -y liblxc-dev`
 - Install the gcc compiler: `sudo apt install -y build-essential`
-- `sudo su` (**only if you want to use privileged containers**)
+- Install `uv` library: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- Run: `source $HOME/.local/bin/env`
 - Create a new folder: `mkdir -p ~/linux-containers-dev && cd ~/linux-containers-dev`
-- Check if Python 3 is installed: `python3 --version`
-- Install the python3-venv package: `sudo apt install -y python3.10-venv` (remove `sudo` if you are already in the root shell)
-- Install Python Development Libraries: `sudo apt install -y python3.10-dev` (remove `sudo` if you are already in the root shell)
-- Create a virtual environment: `python3 -m venv .venv`
-- Activate the virtual environment: `source .venv/bin/activate`
-- Upgrade pip: `pip install --upgrade pip`
-- Install the python3-lxc package: `pip install lxc`
+- Create a new uv Python environment: `uv python install 3.10` and `uv venv --python 3.10`
+- Activate the uv Python environment: `source .venv/bin/activate`
+- Install the lxc python bindings: `uv pip install lxc`
 
-> To run unprivileged containers you can create a virtual environment with non root user namespace.
+> To run privileged containers you can create a virtual environment with root user.
 
 Run the Python interpreter and import the lxc module:
 
 ```python
->> python3
+>> python
 >> import lxc
 >> exit()
 ```
-
-> All the examples in this section assume that you are running as a root user.
 
 ## Build and start a container
 
@@ -80,14 +75,15 @@ def create_container(
 
     if c.running:
         print("Container is started and running successfully.")
+    else:
+        print("Container is not running", file=sys.stderr)
 
 
 if __name__ == "__main__":
     container_name = input("Enter the container name: ")
     create_container(container_name)
-
 ```
-- Run the script: `python create_container.py`
+- Run the script: `systemd-run --user --scope -p Delegate=yes -- python create_container.py`
 - Check the status of the container: `lxc-ls --fancy`
 
 ## Updating all running containers
@@ -126,7 +122,7 @@ for container in lxc.list_containers(as_object=True):
     print("-------------------------------------")
 ```
 
-- Run the script: `python update_all_containers.py`
+- Run the script: `systemd-run --user --scope -p Delegate=yes -- python update_all_containers.py`
 - Check the status of the container: `lxc-ls --fancy`
 
 ## Stop and destroy all containers
@@ -157,7 +153,7 @@ for container in lxc.list_containers(as_object=True):
     print("-------------------------------------")
 ```
 
-- Run the script: `python destroy_all_containers.py`
+- Run the script: `systemd-run --user --scope -p Delegate=yes -- python destroy_all_containers.py`
 - Check the status of the container: `lxc-ls --fancy`
 
 ## Run a Python script inside a container
@@ -171,10 +167,10 @@ import sys
 
 import lxc
 
-conainer_name = input("Enter the name of the container to run the function on: ")
+container_name = input("Enter the name of the container to run the function on: ")
 
 
-c = lxc.Container(conainer_name)
+c = lxc.Container(container_name)
 if not c.running:
     c.start()
 
@@ -199,10 +195,9 @@ if not c.destroy():
     sys.exit(1)
 ```
 
-- Create a new container: `python create_container.py`
-- Run the script: `python run_python_script.py`
+- Create a new container: `systemd-run --user --scope -p Delegate=yes -- python create_container.py`
+- Run the script: `systemd-run --user --scope -p Delegate=yes -- python run_python_script.py`
 - Check the status of the container: `lxc-ls --fancy`
 - Exit the virtual environment: `deactivate`
 - Remove the virtual environment: `rm -rf .venv`
 - Remove the linux-containers-dev folder: `cd .. && rm -rf linux-containers-dev`
-- Exit the root shell: `exit` (if you are in the root shell)
