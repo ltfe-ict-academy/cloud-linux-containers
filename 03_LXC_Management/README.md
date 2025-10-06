@@ -120,6 +120,9 @@ sudo lxc-ls --fancy
 # Unfreeze the container:
 sudo lxc-unfreeze --name container-test
 sudo lxc-ls --fancy
+
+# Stop the container:
+sudo lxc-stop -n container-test
 ```
 
 ## LXC Lifecycle management hooks
@@ -147,8 +150,6 @@ the values of four LXC variables to a file, when the container starts:
 ```bash
 # Check if the container exists:
 sudo lxc-ls --fancy
-# Stop the container:
-sudo lxc-stop -n container-test
 
 # add the lxc.hook.pre-start option to its configuration file:
 sudo su
@@ -198,14 +199,14 @@ sudo lxc-ls --fancy
 
 # set up the available memory for a container to 512 MB
 sudo lxc-attach --name container-test -- free -h
-sudo lxc-cgroup -n container-test memory.limit_in_bytes 536870912
+sudo lxc-cgroup -n container-test memory.max 536870912
 
 # check the memory limit:
 sudo lxc-attach --name container-test -- free -h
 
 # Changing the value only requires running the same command again. 
 # Let's change the available memory to 256 MB
-sudo lxc-cgroup -n container-test memory.limit_in_bytes 268435456
+sudo lxc-cgroup -n container-test memory.max 268435456
 
 # check the memory limit:
 sudo lxc-attach --name container-test -- free -h
@@ -222,7 +223,7 @@ sudo lxc-attach --name container-test -- cat /proc/cpuinfo | grep processor
 ```
 
 To make changes to persist server reboots, we need to add them to the configuration file of the container:
-- `echo "lxc.cgroup.memory.limit_in_bytes = 536870912" | sudo tee -a  /var/lib/lxc/container-test/config`
+- `echo "lxc.cgroup.memory.max = 536870912" | sudo tee -a  /var/lib/lxc/container-test/config`
 
 Setting various other cgroup parameters is done in a similar way.
 
@@ -279,7 +280,7 @@ LXC doesn't pretend to prevent DoS attacks by default. When running multiple unt
 By default, LXC containers are started under a Apparmor policy to restrict some actions. The details of AppArmor integration with lxc are in section Apparmor. Unprivileged containers go further by mapping root in the container to an unprivileged host UID. This prevents access to `/proc` and `/sys` files representing host resources, as well as any other files owned by root on the host.
 
 
-## LXC web panel
+<!-- ## LXC web panel
 - [LXC Web Panel](https://lxc-webpanel.github.io/install.html)
 - [LXC-Web-Panel](https://github.com/lxc-webpanel/LXC-Web-Panel)
 
@@ -292,4 +293,4 @@ sudo su
 wget http://lxc-webpanel.github.io/tools/install.sh -O - | bash
 ```
 
-The user interface can be accessed at the  Url: `http:/your_ip_address:5000/` by using the user id and password which by default are admin and admin.
+The user interface can be accessed at the  Url: `http:/your_ip_address:5000/` by using the user id and password which by default are admin and admin. -->
