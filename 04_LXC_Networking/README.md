@@ -49,8 +49,7 @@ sudo lxc-info -n br1
 Notice the name of the virtual interface that was created on the host OS – veth<ID>, from the output of the lxc-info command. The interface should have been added as a port to the bridge. Let's confirm this using the brctl utility: `brctl show`
 
 Listing all interfaces on the host shows the bridge and the virtual interface associated with the container: 
-- `sudo apt install net-tools`
-- `ifconfig`
+- `ip addr`
 
 Notice the IP address assigned to the lxcbr0 interface, it's the same IP address passed as the listen-address argument to the dnsmasq process. Let's examine the network interface and the routes inside the container by attaching to it first:
 ```bash
@@ -172,7 +171,7 @@ lxc.net.0.type = none
 lxc.net.0.flags = up
 ```
 
-> **WARNING: If both the container and host have upstart as init, 'halt' in a container (for instance) will shut down the host.**
+<!-- > **WARNING: If both the container and host have upstart as init, 'halt' in a container (for instance) will shut down the host.** -->
 
 Stop and start the container for the new network options to take effect, and attach to the
 container:
@@ -180,26 +179,16 @@ container:
 - `sudo lxc-start -n br1`
 - `sudo lxc-ls -f`
 - `sudo lxc-attach -n br1`
-- `ifconfig`
-- `route -n`
+- `ip addr`
 - `ping 8.8.8.8`
-
+- `exit`
 
 Not surprisingly, the network interfaces and routes inside the container are the same as
 those on the host OS, since both share the same root network namespace.
 
 > Note that unprivileged containers do not work with this setting due to an inability to mount sysfs. An unsafe workaround would be to bind mount the host's sysfs.
 
-Reset the container's network configuration to the default settings: `sudo nano /var/lib/lxc/br1/config`
-```bash
-# Network configuration
-lxc.net.0.type = veth
-lxc.net.0.link = lxcbr0
-lxc.net.0.flags = up
-lxc.net.0.hwaddr = 00:16:3e:69:28:4c
-```
 - `sudo lxc-stop -n br1`
-- `sudo lxc-start -n br1`
 - `sudo lxc-ls -f`
 
 ## Configuring LXC using empty network mode
@@ -211,26 +200,19 @@ The empty mode only creates the loopback interface in the container. The network
 lxc.net.0.type = empty
 lxc.net.0.flags = up
 ```
-- `sudo lxc-stop --name br1 && sleep 5 && sudo lxc-start --name br1`
+- `sudo lxc-start --name br1`
 - `sudo lxc-ls -f`
 - `sudo lxc-attach --name br1`
-- `ifconfig`
-- `route -n`
+- `ip addr`
 - `ping 8.8.8.8`
 - `exit`
 
 Only the loopback interface is present and no routes are configured.
 
-Reset the container's network configuration to the default settings: `sudo nano /var/lib/lxc/br1/config`
-```bash
-# Network configuration
-lxc.net.0.type = veth
-lxc.net.0.link = lxcbr0
-lxc.net.0.flags = up
-lxc.net.0.hwaddr = 00:16:3e:69:28:4c
-```
-- `sudo lxc-stop --name br1 && sleep 5 && sudo lxc-start --name br1 && sleep 5 && sudo lxc-ls -f`
-
+Stop and destroy the container:
+- `sudo lxc-stop --name br1`
+- `sudo lxc-destroy --name br1`
+- `sudo lxc-ls -f`
 
 ## Configuring LXC using veth mode
 The NAT mode is the default network mode when creating containers using the LXC template scripts or the libvirt userspace tools. In this mode, the container can reach the outside world using IP masquerading with iptables rules applied on the host.
@@ -266,7 +248,7 @@ If we need to have multiple containers using the phys mode, then we'll need that
 
 ## Configuring LXC using ipvlan mode
 
-Finally, you can ask LXC to use ipvlan for the container’s NIC. Note that this has limitations and depending on configuration may not allow the container to talk to the host itself. Therefore the other two options are preferred and more commonly used.
+You can ask LXC to use ipvlan for the container’s NIC. Note that this has limitations and depending on configuration may not allow the container to talk to the host itself. Therefore the other two options are preferred and more commonly used.
 
 
 ## Configuring LXC using macvlan mode
