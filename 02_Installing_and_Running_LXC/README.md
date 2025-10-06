@@ -56,8 +56,8 @@ Ubuntu is also one of the few (if not only) Linux distributions to come by defau
 On such an Ubuntu system, installing LXC is as simple as:
 ```bash
 sudo apt update
-sudo apt upgrade # (optional but recommended)
-sudo apt install lxc
+sudo apt upgrade -y # (optional but recommended)
+sudo apt install lxc lxc-utils
 ```
 
 This will pull in the required and recommended dependencies, as well as set up a network bridge for containers to use.
@@ -67,7 +67,7 @@ Your system will then have all the LXC commands available, all its templates as 
 Check the installed version:
 - `lxc-info --version`
 
-Here’s the state of LXC (classic Linux Containers) on recent Ubuntu LTS releases:
+Here's the state of LXC (classic Linux Containers) on recent Ubuntu LTS releases:
 
 | Ubuntu release        | LXC version in official repos (current “updates”)  | Notes on upgrading to newer LXC                                                                                                                                                                       |
 | --------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -121,7 +121,7 @@ Add the option for LXC to manage NAT automatically (If lxc-net is active and `LX
 - Add `LXC_NAT="true"` to file: `sudo nano /etc/default/lxc-net`
 - Restart and enable: `sudo systemctl enable --now lxc-net`
 
-The networking will be set up as a virtual Ethernet connection type—that is, veth from the network bridge lxcbr0 for each container that will get created.
+The networking will be set up as a virtual Ethernet connection type - that is, veth from the network bridge `lxcbr0` for each container that will get created.
 
 The installation will also configure a default container network. The name of the bridge is `lxcbr0`:
 - `ip addr | grep lxc`
@@ -174,6 +174,7 @@ sudo lxc-attach -n my-first-debian
 # Run ID and exit
 id
 ps axfwwu
+ping 8.8.8.8
 exit
 # Stop the container.
 sudo lxc-stop -n my-first-debian
